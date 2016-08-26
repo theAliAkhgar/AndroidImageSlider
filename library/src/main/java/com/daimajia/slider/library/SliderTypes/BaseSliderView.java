@@ -17,7 +17,7 @@ import java.io.File;
  * BaseSliderView provides some useful methods.
  * I provide two example: {@link com.daimajia.slider.library.SliderTypes.DefaultSliderView} and
  * {@link com.daimajia.slider.library.SliderTypes.TextSliderView}
- * if you want to show progressbar, you just need to set a progressbar id as @+id/loading_bar.
+ * if you want to showh progressbar, you just need to set a progressbar id as @+id/loading_bar.
  */
 public abstract class BaseSliderView {
 
@@ -190,7 +190,6 @@ public abstract class BaseSliderView {
      */
     protected void bindEventAndShow(final View v, ImageView targetImageView){
         final BaseSliderView me = this;
-
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,61 +205,8 @@ public abstract class BaseSliderView {
         if (mLoadListener != null) {
             mLoadListener.onStart(me);
         }
+                ImageLoader.getInstance().displayImage(mUrl,targetImageView);
 
-        Picasso p = (mPicasso != null) ? mPicasso : Picasso.with(mContext);
-        RequestCreator rq = null;
-        if(mUrl!=null){
-            rq = p.load(mUrl);
-        }else if(mFile != null){
-            rq = p.load(mFile);
-        }else if(mRes != 0){
-            rq = p.load(mRes);
-        }else{
-            return;
-        }
-
-        if(rq == null){
-            return;
-        }
-
-        if(getEmpty() != 0){
-            rq.placeholder(getEmpty());
-        }
-
-        if(getError() != 0){
-            rq.error(getError());
-        }
-
-        switch (mScaleType){
-            case Fit:
-                rq.fit();
-                break;
-            case CenterCrop:
-                rq.fit().centerCrop();
-                break;
-            case CenterInside:
-                rq.fit().centerInside();
-                break;
-        }
-
-        rq.into(targetImageView,new Callback() {
-            @Override
-            public void onSuccess() {
-                if(v.findViewById(R.id.loading_bar) != null){
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onError() {
-                if(mLoadListener != null){
-                    mLoadListener.onEnd(false,me);
-                }
-                if(v.findViewById(R.id.loading_bar) != null){
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
-                }
-            }
-        });
    }
 
 
